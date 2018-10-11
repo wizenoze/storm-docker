@@ -1,10 +1,13 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:11
 
 # Install required packages
-RUN apk add --no-cache \
-    bash \
-    python \
-    su-exec
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python-minimal \
+        ca-certificates \
+        gnupg \
+        gosu && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV STORM_USER=storm \
     STORM_CONF_DIR=/conf \
@@ -22,8 +25,6 @@ ARG DISTRO_NAME=apache-storm-1.2.2
 
 # Download Apache Storm, verify its PGP signature, untar and clean up
 RUN set -ex; \
-    apk add --no-cache --virtual .build-deps \
-      gnupg; \
     wget -q "http://www.apache.org/dist/storm/$DISTRO_NAME/$DISTRO_NAME.tar.gz"; \
     wget -q "http://www.apache.org/dist/storm/$DISTRO_NAME/$DISTRO_NAME.tar.gz.asc"; \
     export GNUPGHOME="$(mktemp -d)"; \
@@ -33,8 +34,7 @@ RUN set -ex; \
     gpg --batch --verify "$DISTRO_NAME.tar.gz.asc" "$DISTRO_NAME.tar.gz"; \
     tar -xzf "$DISTRO_NAME.tar.gz"; \
     chown -R "$STORM_USER:$STORM_USER" "$DISTRO_NAME"; \
-    rm -rf "$GNUPGHOME" "$DISTRO_NAME.tar.gz" "$DISTRO_NAME.tar.gz.asc"; \
-    apk del .build-deps
+    rm -rf "$GNUPGHOME" "$DISTRO_NAME.tar.gz" "$DISTRO_NAME.tar.gz.asc";
 
 WORKDIR $DISTRO_NAME
 
