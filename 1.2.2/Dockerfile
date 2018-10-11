@@ -9,6 +9,10 @@ RUN apt-get update && \
         gosu && \
     rm -rf /var/lib/apt/lists/*
 
+# Install additional certificates
+COPY extra-certs /usr/local/share/ca-certificates
+RUN update-ca-certificates
+
 ENV STORM_USER=storm \
     STORM_CONF_DIR=/conf \
     STORM_DATA_DIR=/data \
