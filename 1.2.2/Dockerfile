@@ -6,7 +6,8 @@ RUN apt-get update && \
         python-minimal \
         ca-certificates \
         gnupg \
-        gosu && \
+        gosu \
+        less && \
     rm -rf /var/lib/apt/lists/*
 
 # Install additional certificates
