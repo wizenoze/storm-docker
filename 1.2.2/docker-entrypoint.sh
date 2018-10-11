@@ -9,6 +9,7 @@ if [ "$1" = 'storm' -a "$(id -u)" = '0' ]; then
 fi
 
 # Generate the config only if it doesn't exist
+# https://issues.apache.org/jira/browse/STORM-320
 CONFIG="$STORM_CONF_DIR/storm.yaml"
 if [ ! -f "$CONFIG" ]; then
     cat << EOF > "$CONFIG"
