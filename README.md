@@ -1,3 +1,12 @@
+# Changes made to the original `storm` image
+
+* Removed support for Apache Storm versions 1.0.x and 1.1.x
+* Replaced base image `openjdk:8-jre-alpine` with `openjdk:11`
+* `openjdk:11` is Debian based, `apk add` needed to be replaced with `apt-get install`
+* Installed some extra certificates
+* Enabled profiling and reconfigured JVM debugging options for OpenJDK 11 in `storm.yaml`
+* Provided workaround for https://bugs.debian.org/910804
+
 # Supported tags and respective `Dockerfile` links
 
 * `1.2.2`, `1.2`, `latest` [(1.2.2/Dockerfile)](https://github.com/wizenoze/storm-docker/blob/master/1.2.2/Dockerfile)
