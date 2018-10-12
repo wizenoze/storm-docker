@@ -1,5 +1,12 @@
 FROM openjdk:11
 
+# Workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=910804
+RUN mkdir -p $JAVA_HOME/lib/jfr && \
+    wget https://hg.openjdk.java.net/jdk/jdk11/raw-file/76072a077ee1/src/jdk.jfr/share/conf/jfr/default.jfc \
+      -O $JAVA_HOME/lib/jfr/default.jfc && \
+    wget https://hg.openjdk.java.net/jdk/jdk11/raw-file/76072a077ee1/src/jdk.jfr/share/conf/jfr/profile.jfc \
+      -O $JAVA_HOME/lib/jfr/profile.jfc
+
 # Install required packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
