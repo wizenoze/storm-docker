@@ -62,29 +62,46 @@ services:
     zookeeper:
         image: zookeeper
         container_name: zookeeper
+        # https://github.com/31z4/zookeeper-docker/#how-to-configure-logging
+        environment:
+            - ZOO_LOG4J_PROP=INFO,ROLLINGFILE
         restart: always
 
-    nimbus:
-        image: wizenoze/storm
-        container_name: nimbus
+    storm-nimbus:
+        image: wizenoze/storm:1.2.2
+        container_name: storm-nimbus
         command: storm nimbus
         depends_on:
             - zookeeper
         links:
             - zookeeper
-        restart: always
         ports:
             - 6627:6627
+        restart: always
 
-    supervisor:
-        image: wizenoze/storm
-        container_name: supervisor
-        command: storm supervisor
+    storm-ui:
+        image: wizenoze/storm:1.2.2
+        container_name: storm-ui
+        command: storm ui
         depends_on:
-            - nimbus
+            - storm-nimbus
             - zookeeper
         links:
-            - nimbus
+            - storm-nimbus
+            - zookeeper
+        ports:
+            - 9080:8080
+        restart: always
+
+    storm-worker:
+        image: wizenoze/storm:1.2.2
+        container_name: storm-worker
+        command: storm supervisor
+        depends_on:
+            - storm-nimbus
+            - zookeeper
+        links:
+            - storm-nimbus
             - zookeeper
         restart: always
 ```
