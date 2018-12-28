@@ -13,6 +13,12 @@ fi
 CONFIG="$STORM_CONF_DIR/storm.yaml"
 if [ ! -f "$CONFIG" ]; then
     cat << EOF > "$CONFIG"
+#how many seconds to sleep for before shutting down threads on worker (default: 3)
+supervisor.worker.shutdown.sleep.secs: 10
+
+#how frequently the supervisor checks on the status of the processes it's monitoring and restarts if necessary (default: 3)
+supervisor.monitor.frequency.secs: 5
+
 storm.zookeeper.servers: [zookeeper]
 nimbus.seeds: [storm-nimbus]
 storm.log.dir: "$STORM_LOG_DIR"
