@@ -32,25 +32,25 @@ RUN set -ex; \
     mkdir -p "$STORM_CONF_DIR" "$STORM_DATA_DIR" "$STORM_LOG_DIR"; \
     chown -R "$STORM_USER:$STORM_USER" "$STORM_CONF_DIR" "$STORM_DATA_DIR" "$STORM_LOG_DIR"``
 
-ARG GPG_KEY=ACEFE18DD2322E1E84587A148DE03962E80B8FFD
-ARG DISTRO_NAME=apache-storm-1.2.2
+ARG STORM_GPG_KEY=ACEFE18DD2322E1E84587A148DE03962E80B8FFD
+ARG STORM_DISTRO_NAME=apache-storm-1.2.2
 
 # Download Apache Storm, verify its PGP signature, untar and clean up
 RUN set -ex; \
-    wget -q "http://www.apache.org/dist/storm/$DISTRO_NAME/$DISTRO_NAME.tar.gz"; \
-    wget -q "http://www.apache.org/dist/storm/$DISTRO_NAME/$DISTRO_NAME.tar.gz.asc"; \
+    wget -q "http://www.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz"; \
+    wget -q "http://www.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz.asc"; \
     export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$GPG_KEY" || \
-    gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEY" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$GPG_KEY"; \
-    gpg --batch --verify "$DISTRO_NAME.tar.gz.asc" "$DISTRO_NAME.tar.gz"; \
-    tar -xzf "$DISTRO_NAME.tar.gz"; \
-    chown -R "$STORM_USER:$STORM_USER" "$DISTRO_NAME"; \
-    rm -rf "$GNUPGHOME" "$DISTRO_NAME.tar.gz" "$DISTRO_NAME.tar.gz.asc";
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$STORM_GPG_KEY" || \
+    gpg --keyserver pgp.mit.edu --recv-keys "$STORM_GPG_KEY" || \
+    gpg --keyserver keyserver.pgp.com --recv-keys "$STORM_GPG_KEY"; \
+    gpg --batch --verify "$STORM_DISTRO_NAME.tar.gz.asc" "$STORM_DISTRO_NAME.tar.gz"; \
+    tar -xzf "$STORM_DISTRO_NAME.tar.gz"; \
+    chown -R "$STORM_USER:$STORM_USER" "$STORM_DISTRO_NAME"; \
+    rm -rf "$GNUPGHOME" "$STORM_DISTRO_NAME.tar.gz" "$STORM_DISTRO_NAME.tar.gz.asc";
 
-WORKDIR $DISTRO_NAME
+WORKDIR $STORM_DISTRO_NAME
 
-ENV PATH $PATH:/$DISTRO_NAME/bin
+ENV PATH $PATH:/$STORM_DISTRO_NAME/bin
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
