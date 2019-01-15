@@ -36,4 +36,24 @@ worker.profiler.childopts: "-XX:StartFlightRecording=disk=true,dumponexit=true,f
 EOF
 fi
 
+if [ -n "${PROMETHEUS_SCHEME}" -a -n "${PROMETHEUS_HOST}" -a -n "${PROMETHEUS_PORT}" ]; then
+    sed "s/PROMETHEUS_SCHEME/${PROMETHEUS_SCHEME}/; s/PROMETHEUS_HOST/${PROMETHEUS_HOST}/; s/PROMETHEUS_PORT/${PROMETHEUS_PORT}/" >> "${CONFIG}" <<EOF
+storm.metrics.reporters:
+  # Prometheus Reporter
+  - class: "com.wizenoze.storm.metrics2.reporters.PrometheusStormReporter"
+    daemons:
+      - "supervisor"
+      - "nimbus"
+      - "worker"
+    report.period: 1
+    report.period.units: "SECONDS"
+    filter:
+      class: "org.apache.storm.metrics2.filters.RegexFilter"
+      expression: "storm\\.worker\\..+\\..+\\..+\\.(?:.+\\.)?-?[\\d]+\\.\\d+-(emitted|acked|disruptor-executor.+-queue-(?:percent-full|overflow))"
+    prometheus.scheme: PROMETHEUS_SCHEME
+    prometheus.host: PROMETHEUS_HOST
+    prometheus.port: PROMETHEUS_PORT
+EOF
+fi
+
 exec "$@"

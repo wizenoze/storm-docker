@@ -24,7 +24,9 @@ RUN update-ca-certificates
 ENV STORM_USER=storm \
     STORM_CONF_DIR=/conf \
     STORM_DATA_DIR=/data \
-    STORM_LOG_DIR=/logs
+    STORM_LOG_DIR=/logs \
+    PROMETHEUS_SCHEME=http \
+    PROMETHEUS_PORT=9091
 
 # Add a user and make dirs
 RUN set -ex; \
@@ -49,6 +51,24 @@ RUN set -ex; \
     rm -rf "$GNUPGHOME" "$STORM_DISTRO_NAME.tar.gz" "$STORM_DISTRO_NAME.tar.gz.asc";
 
 WORKDIR $STORM_DISTRO_NAME
+
+ARG STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY=C73B4AB37E0AF60909385973EE6C2B91726E4F8D
+ARG STORM_METRICS_REPORTER_VERSION=0.0.1
+ARG STORM_METRICS_REPORTER_JAR=storm-metrics-reporter-prometheus-$STORM_METRICS_REPORTER_VERSION.jar
+
+# Download Apache Storm, verify its PGP signature, untar and clean up
+RUN set -ex; \
+    wget -q "https://github.com/wizenoze/storm-metrics-reporter-prometheus/releases/download/$STORM_METRICS_REPORTER_VERSION/$STORM_METRICS_REPORTER_JAR"; \
+    wget -q "https://github.com/wizenoze/storm-metrics-reporter-prometheus/releases/download/$STORM_METRICS_REPORTER_VERSION/$STORM_METRICS_REPORTER_JAR.asc"; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY" || \
+    gpg --keyserver pgp.mit.edu --recv-keys "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY" || \
+    gpg --keyserver keyserver.pgp.com --recv-keys "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY"; \
+    gpg --batch --verify "$STORM_METRICS_REPORTER_JAR.asc" "$STORM_METRICS_REPORTER_JAR"; \
+    chown -R "$STORM_USER:$STORM_USER" "$STORM_METRICS_REPORTER_JAR"; \
+    cp "$STORM_METRICS_REPORTER_JAR" extlib; \
+    cp "$STORM_METRICS_REPORTER_JAR" extlib-daemon; \
+    rm -rf "$GNUPGHOME" "$STORM_METRICS_REPORTER_JAR" "$STORM_METRICS_REPORTER_JAR.asc";
 
 ENV PATH $PATH:/$STORM_DISTRO_NAME/bin
 
