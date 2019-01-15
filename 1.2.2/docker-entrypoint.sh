@@ -34,10 +34,9 @@ worker.childopts: "-Xmx%HEAP-MEM%m -Xlog:gc*=debug:file=artifacts/gc.log:utctime
 # See: https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-3B1CE181-CD30-4178-9602-230B800D4FAE
 worker.profiler.childopts: "-XX:StartFlightRecording=disk=true,dumponexit=true,filename=artifacts/recording.jfr,maxsize=1024m,maxage=1d,settings=default"
 EOF
-fi
 
-if [ -n "${PROMETHEUS_REPORT_PERIOD_MIN}" -a -n "${PROMETHEUS_SCHEME}" -a -n "${PROMETHEUS_HOST}" -a -n "${PROMETHEUS_PORT}" ]; then
-    sed "s/PROMETHEUS_REPORT_PERIOD_MIN/${PROMETHEUS_REPORT_PERIOD_MIN}/; s/PROMETHEUS_SCHEME/${PROMETHEUS_SCHEME}/; s/PROMETHEUS_HOST/${PROMETHEUS_HOST}/; s/PROMETHEUS_PORT/${PROMETHEUS_PORT}/" >> "${CONFIG}" <<EOF
+    if [ -n "${PROMETHEUS_REPORT_PERIOD_MIN}" -a -n "${PROMETHEUS_SCHEME}" -a -n "${PROMETHEUS_HOST}" -a -n "${PROMETHEUS_PORT}" ]; then
+        sed "s/PROMETHEUS_REPORT_PERIOD_MIN/${PROMETHEUS_REPORT_PERIOD_MIN}/; s/PROMETHEUS_SCHEME/${PROMETHEUS_SCHEME}/; s/PROMETHEUS_HOST/${PROMETHEUS_HOST}/; s/PROMETHEUS_PORT/${PROMETHEUS_PORT}/" >> "${CONFIG}" <<EOF
 storm.metrics.reporters:
   # Prometheus Reporter
   - class: "com.wizenoze.storm.metrics2.reporters.PrometheusStormReporter"
@@ -49,11 +48,12 @@ storm.metrics.reporters:
     report.period.units: "MINUTES"
     filter:
       class: "org.apache.storm.metrics2.filters.RegexFilter"
-      expression: "storm\\.worker\\..+\\..+\\..+\\.(?:.+\\.)?-?[\\d]+\\.\\d+-(emitted|acked|disruptor-executor.+-queue-(?:percent-full|overflow))"
+      expression: "storm\\\\.worker\\\\..+\\\\..+\\\\..+\\\\.(?:.+\\\\.)?-?[\\\\d]+\\\\.\\\\d+-(emitted|acked|disruptor-executor.+-queue-(?:percent-full|overflow))"
     prometheus.scheme: PROMETHEUS_SCHEME
     prometheus.host: PROMETHEUS_HOST
     prometheus.port: PROMETHEUS_PORT
 EOF
+    fi
 fi
 
 exec "$@"
