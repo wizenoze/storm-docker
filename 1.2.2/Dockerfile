@@ -26,7 +26,8 @@ ENV STORM_USER=storm \
     STORM_DATA_DIR=/data \
     STORM_LOG_DIR=/logs \
     PROMETHEUS_SCHEME=http \
-    PROMETHEUS_PORT=9091
+    PROMETHEUS_PORT=9091 \
+    PROMETHEUS_REPORT_PERIOD_MIN=10
 
 # Add a user and make dirs
 RUN set -ex; \

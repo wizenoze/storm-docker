@@ -36,8 +36,8 @@ worker.profiler.childopts: "-XX:StartFlightRecording=disk=true,dumponexit=true,f
 EOF
 fi
 
-if [ -n "${PROMETHEUS_SCHEME}" -a -n "${PROMETHEUS_HOST}" -a -n "${PROMETHEUS_PORT}" ]; then
-    sed "s/PROMETHEUS_SCHEME/${PROMETHEUS_SCHEME}/; s/PROMETHEUS_HOST/${PROMETHEUS_HOST}/; s/PROMETHEUS_PORT/${PROMETHEUS_PORT}/" >> "${CONFIG}" <<EOF
+if [ -n "${PROMETHEUS_REPORT_PERIOD_MIN}" -a -n "${PROMETHEUS_SCHEME}" -a -n "${PROMETHEUS_HOST}" -a -n "${PROMETHEUS_PORT}" ]; then
+    sed "s/PROMETHEUS_REPORT_PERIOD_MIN/${PROMETHEUS_REPORT_PERIOD_MIN}/; s/PROMETHEUS_SCHEME/${PROMETHEUS_SCHEME}/; s/PROMETHEUS_HOST/${PROMETHEUS_HOST}/; s/PROMETHEUS_PORT/${PROMETHEUS_PORT}/" >> "${CONFIG}" <<EOF
 storm.metrics.reporters:
   # Prometheus Reporter
   - class: "com.wizenoze.storm.metrics2.reporters.PrometheusStormReporter"
@@ -45,8 +45,8 @@ storm.metrics.reporters:
       - "supervisor"
       - "nimbus"
       - "worker"
-    report.period: 1
-    report.period.units: "SECONDS"
+    report.period: PROMETHEUS_REPORT_PERIOD_MIN
+    report.period.units: "MINUTES"
     filter:
       class: "org.apache.storm.metrics2.filters.RegexFilter"
       expression: "storm\\.worker\\..+\\..+\\..+\\.(?:.+\\.)?-?[\\d]+\\.\\d+-(emitted|acked|disruptor-executor.+-queue-(?:percent-full|overflow))"
