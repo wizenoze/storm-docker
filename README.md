@@ -12,7 +12,7 @@
 
 * `1.2.2`, `1.2`, `latest` [(1.2.2/Dockerfile)](https://github.com/wizenoze/storm-docker/blob/master/1.2.2/Dockerfile)
 
-[![](https://images.microbadger.com/badges/image/31z4/storm.svg)](http://microbadger.com/images/31z4/storm)
+[![](https://images.microbadger.com/badges/image/wizenoze/storm.svg)](http://microbadger.com/images/wizenoze/storm)
 
 # What is Apache Storm?
 
