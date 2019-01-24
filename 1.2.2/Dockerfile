@@ -12,7 +12,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python-minimal \
         ca-certificates \
-        gnupg \
         gosu \
         less && \
     rm -rf /var/lib/apt/lists/*
@@ -50,15 +49,9 @@ ARG STORM_DISTRO_NAME=apache-storm-1.2.2
 # Download Apache Storm, verify its PGP signature, untar and clean up
 RUN set -ex; \
     wget -q "http://www.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz"; \
-    wget -q "http://www.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz.asc"; \
-    export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$STORM_GPG_KEY" || \
-    gpg --keyserver pgp.mit.edu --recv-keys "$STORM_GPG_KEY" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$STORM_GPG_KEY"; \
-    gpg --batch --verify "$STORM_DISTRO_NAME.tar.gz.asc" "$STORM_DISTRO_NAME.tar.gz"; \
     tar -xzf "$STORM_DISTRO_NAME.tar.gz"; \
     chown -R "$STORM_USER:$STORM_USER" "$STORM_DISTRO_NAME"; \
-    rm -rf "$GNUPGHOME" "$STORM_DISTRO_NAME.tar.gz" "$STORM_DISTRO_NAME.tar.gz.asc";
+    rm -f "$STORM_DISTRO_NAME.tar.gz";
 
 WORKDIR $STORM_DISTRO_NAME
 
@@ -69,16 +62,10 @@ ARG STORM_METRICS_REPORTER_JAR=storm-metrics-reporter-prometheus-$STORM_METRICS_
 # Download Apache Storm, verify its PGP signature, untar and clean up
 RUN set -ex; \
     wget -q "https://github.com/wizenoze/storm-metrics-reporter-prometheus/releases/download/$STORM_METRICS_REPORTER_VERSION/$STORM_METRICS_REPORTER_JAR"; \
-    wget -q "https://github.com/wizenoze/storm-metrics-reporter-prometheus/releases/download/$STORM_METRICS_REPORTER_VERSION/$STORM_METRICS_REPORTER_JAR.asc"; \
-    export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY" || \
-    gpg --keyserver pgp.mit.edu --recv-keys "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$STORM_METRICS_REPORTER_PROMETHEUS_GPG_KEY"; \
-    gpg --batch --verify "$STORM_METRICS_REPORTER_JAR.asc" "$STORM_METRICS_REPORTER_JAR"; \
     chown -R "$STORM_USER:$STORM_USER" "$STORM_METRICS_REPORTER_JAR"; \
     cp "$STORM_METRICS_REPORTER_JAR" extlib; \
     cp "$STORM_METRICS_REPORTER_JAR" extlib-daemon; \
-    rm -rf "$GNUPGHOME" "$STORM_METRICS_REPORTER_JAR" "$STORM_METRICS_REPORTER_JAR.asc";
+    rm -f "$STORM_METRICS_REPORTER_JAR";
 
 # Used by Sentry when enabled through SENTRY_DSN
 COPY worker.xml /conf
