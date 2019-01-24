@@ -7,6 +7,7 @@
 * Enabled profiling and reconfigured JVM debugging options for OpenJDK 11 in `storm.yaml`
 * Provided workaround for https://bugs.debian.org/910804
 * Added [Storm metrics reporter for Prometheus Gateway](https://github.com/wizenoze/storm-metrics-reporter-prometheus)
+* Added [Sentry](https://docs.sentry.io/clients/java/) support
 
 # Supported tags and respective `Dockerfile` links
 

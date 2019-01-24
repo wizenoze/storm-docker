@@ -27,7 +27,16 @@ ENV STORM_USER=storm \
     STORM_LOG_DIR=/logs \
     PROMETHEUS_SCHEME=http \
     PROMETHEUS_PORT=9091 \
-    PROMETHEUS_REPORT_PERIOD_MIN=10
+    PROMETHEUS_REPORT_PERIOD_MIN=10 \
+    SENTRY_VERSION="1.7.17" \
+    # Sentry depends on Jackson, you can customize its version here
+    JACKSON_VERSION="2.9.8" \
+    # Set DSN (Data Source Name) to enable error reporting to Sentry
+    # https://docs.sentry.io/clients/java/#setting-the-dsn
+    SENTRY_DSN="" \
+    # Configure in-app stack frames
+    # https://docs.sentry.io/clients/java/config/#in-application-stack-frames
+    SENTRY_APP_PACKAGES=""
 
 # Add a user and make dirs
 RUN set -ex; \
@@ -70,6 +79,9 @@ RUN set -ex; \
     cp "$STORM_METRICS_REPORTER_JAR" extlib; \
     cp "$STORM_METRICS_REPORTER_JAR" extlib-daemon; \
     rm -rf "$GNUPGHOME" "$STORM_METRICS_REPORTER_JAR" "$STORM_METRICS_REPORTER_JAR.asc";
+
+# Used by Sentry when enabled through SENTRY_DSN
+COPY worker.xml /conf
 
 ENV PATH $PATH:/$STORM_DISTRO_NAME/bin
 

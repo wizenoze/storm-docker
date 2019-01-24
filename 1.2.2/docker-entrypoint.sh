@@ -54,6 +54,41 @@ storm.metrics.reporters:
     prometheus.port: PROMETHEUS_PORT
 EOF
     fi
+
+    # Use a customized worker.xml if Sentry DSN is configured
+    if [ -n "${SENTRY_DSN}" ]; then
+        echo "storm.log4j2.conf.dir: \"/conf\"" >> "${CONFIG}"
+    fi
+fi
+
+# Configure Sentry
+if [ -n "${SENTRY_DSN}" -a -n "${SENTRY_VERSION}" -a -n "${JACKSON_VERSION}" ]; then
+    # Download Sentry and its dependecies
+    if [ ! -f "${PWD}/extlib/sentry-${SENTRY_VERSION}.jar" ]; then
+        wget -q "http://central.maven.org/maven2/io/sentry/sentry/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}.jar"
+        mv "sentry-${SENTRY_VERSION}.jar" "${PWD}/extlib"
+    fi
+
+    if [ ! -f "${PWD}/extlib/sentry-log4j2-${SENTRY_VERSION}.jar" ]; then
+        wget -q "http://central.maven.org/maven2/io/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
+        mv "sentry-log4j2-${SENTRY_VERSION}.jar" "${PWD}/extlib"
+    fi
+
+    if [ ! -f "${PWD}/extlib/jackson-core-${JACKSON_VERSION}.jar" ]; then
+        wget -q "http://central.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/${JACKSON_VERSION}/jackson-core-${JACKSON_VERSION}.jar"
+        mv "jackson-core-${JACKSON_VERSION}.jar" "${PWD}/extlib"
+    fi
+
+    # Craft sentry.properties in a way that it could be picked up from classpath
+    if [ ! -f "${PWD}/extlib/sentry-properties.jar" ]; then
+        echo "dsn=${SENTRY_DSN}" > /tmp/sentry.properties
+        if [ -n "${SENTRY_APP_PACKAGES}" ]; then
+            echo "stacktrace.app.packages=${SENTRY_APP_PACKAGES}" >> /tmp/sentry.properties
+        fi
+
+        $JAVA_HOME/bin/jar cvf /tmp/sentry-properties.jar -C /tmp sentry.properties
+        mv /tmp/sentry-properties.jar "${PWD}/extlib"
+    fi
 fi
 
 exec "$@"
