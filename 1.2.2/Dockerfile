@@ -48,7 +48,7 @@ ARG STORM_DISTRO_NAME=apache-storm-1.2.2
 
 # Download Apache Storm, verify its PGP signature, untar and clean up
 RUN set -ex; \
-    wget -q "http://www.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz"; \
+    wget -q "http://archive.apache.org/dist/storm/$STORM_DISTRO_NAME/$STORM_DISTRO_NAME.tar.gz"; \
     tar -xzf "$STORM_DISTRO_NAME.tar.gz"; \
     chown -R "$STORM_USER:$STORM_USER" "$STORM_DISTRO_NAME"; \
     rm -f "$STORM_DISTRO_NAME.tar.gz";
