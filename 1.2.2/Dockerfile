@@ -69,6 +69,7 @@ RUN set -ex; \
 
 # Used by Sentry when enabled through SENTRY_DSN
 COPY worker.xml /conf
+COPY cluster.xml /conf
 
 ENV PATH $PATH:/$STORM_DISTRO_NAME/bin
 
