@@ -63,19 +63,20 @@ fi
 
 # Configure Sentry
 if [ -n "${SENTRY_DSN}" -a -n "${SENTRY_VERSION}" -a -n "${JACKSON_VERSION}" ]; then
+	echo "Setting up Sentry extlib"
     # Download Sentry and its dependecies
     if [ ! -f "${PWD}/extlib/sentry-${SENTRY_VERSION}.jar" ]; then
-        wget -q "http://central.maven.org/maven2/io/sentry/sentry/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}.jar"
+        wget -q "https://repo.maven.apache.org/maven2/io/sentry/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}.jar"
         mv "sentry-${SENTRY_VERSION}.jar" "${PWD}/extlib"
     fi
 
     if [ ! -f "${PWD}/extlib/sentry-log4j2-${SENTRY_VERSION}.jar" ]; then
-        wget -q "http://central.maven.org/maven2/io/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
+        wget -q "https://repo.maven.apache.org/maven2/io/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
         mv "sentry-log4j2-${SENTRY_VERSION}.jar" "${PWD}/extlib"
     fi
 
     if [ ! -f "${PWD}/extlib/jackson-core-${JACKSON_VERSION}.jar" ]; then
-        wget -q "http://central.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/${JACKSON_VERSION}/jackson-core-${JACKSON_VERSION}.jar"
+        wget -q "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/${JACKSON_VERSION}/jackson-core-${JACKSON_VERSION}.jar"
         mv "jackson-core-${JACKSON_VERSION}.jar" "${PWD}/extlib"
     fi
 
