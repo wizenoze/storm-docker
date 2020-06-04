@@ -66,12 +66,12 @@ if [ -n "${SENTRY_DSN}" -a -n "${SENTRY_VERSION}" -a -n "${JACKSON_VERSION}" ]; 
 	echo "Setting up Sentry extlib"
     # Download Sentry and its dependecies
     if [ ! -f "${PWD}/extlib/sentry-${SENTRY_VERSION}.jar" ]; then
-        wget "https://repo.maven.apache.org/maven2/io/sentry/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}.jar"
+        wget "https://repo.maven.apache.org/maven2/io/sentry/sentry/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}.jar"
         mv "sentry-${SENTRY_VERSION}.jar" "${PWD}/extlib"
     fi
 
     if [ ! -f "${PWD}/extlib/sentry-log4j2-${SENTRY_VERSION}.jar" ]; then
-        wget "https://repo.maven.apache.org/maven2/io/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
+        wget "https://repo.maven.apache.org/maven2/io/sentry/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
         mv "sentry-log4j2-${SENTRY_VERSION}.jar" "${PWD}/extlib"
     fi
 
