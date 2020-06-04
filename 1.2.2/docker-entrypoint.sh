@@ -71,7 +71,7 @@ if [ -n "${SENTRY_DSN}" -a -n "${SENTRY_VERSION}" -a -n "${JACKSON_VERSION}" ]; 
     fi
 
     if [ ! -f "${PWD}/extlib/sentry-log4j2-${SENTRY_VERSION}.jar" ]; then
-        wget "https://repo.maven.apache.org/maven2/io/sentry/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
+        wget "https://repo.maven.apache.org/maven2/io/sentry/sentry-log4j2/${SENTRY_VERSION}/sentry-log4j2-${SENTRY_VERSION}.jar"
         mv "sentry-log4j2-${SENTRY_VERSION}.jar" "${PWD}/extlib"
     fi
 
