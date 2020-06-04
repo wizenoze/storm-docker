@@ -18,7 +18,7 @@ RUN apt-get update && \
 
 # Install additional certificates
 COPY extra-certs /usr/local/share/ca-certificates
-RUN update-ca-certificates
+RUN update-ca-certificates --fresh
 
 ENV STORM_USER=storm \
     STORM_CONF_DIR=/conf \
